@@ -1,0 +1,31 @@
+name: Deploy
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  pipeline:
+    
+    name: "Deploy pipeline"
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 5.0.x
+    
+    - name: Restore dependencies
+      working-directory: "D:/a/sistemiv-core-ops/sistemiv-core-ops/SistemivOperations/SistemivOperations.Api"
+      run: dotnet restore "SistemivOperations.Api.csproj"
+    
+    - name: Build
+      working-directory: "D:/a/sistemiv-core-ops/sistemiv-core-ops/SistemivOperations/SistemivOperations.Api"
+      run: dotnet build --no-restore
+    
+    - name: Test
+      working-directory: "D:/a/sistemiv-core-ops/sistemiv-core-ops/SistemivOperations/SistemivOperations.Api"
+      run: dotnet test
