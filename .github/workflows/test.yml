@@ -1,0 +1,45 @@
+name: Test
+
+on:
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+  
+    name: "Super linter"
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Super-Linter
+      uses: github/super-linter@v4.9.2
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  
+  pipeline:
+    needs: [lint]
+    
+    name: "Test pipeline"
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v3
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v2
+      with:
+        dotnet-version: 5.0.x
+    
+    - name: Restore dependencies
+      working-directory: "D:/a/sistemiv-core-ops/sistemiv-core-ops/SistemivOperations/SistemivOperations.Api"
+      run: dotnet restore
+    
+    - name: Build
+      working-directory: "D:/a/sistemiv-core-ops/sistemiv-core-ops/SistemivOperations/SistemivOperations.Api"
+      run: dotnet build --no-restore
+    
+    - name: Test
+      working-directory: "D:/a/sistemiv-core-ops/sistemiv-core-ops/SistemivOperations/SistemivOperations.Api"
+      run: dotnet test
